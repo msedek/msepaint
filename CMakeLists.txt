@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(msepaint VERSION 0.1.0 LANGUAGES CXX)
+project(msepaint VERSION 0.1.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -115,3 +115,10 @@ install(TARGETS msepaint RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 configure_file(dist/msepaint.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/msepaint.desktop @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/msepaint.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES dist/msepaint.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+
+# Windows: aplicación de ventana (sin consola), ícono y datos de versión del .exe.
+if(WIN32)
+    configure_file(dist/msepaint.rc.in ${CMAKE_CURRENT_BINARY_DIR}/msepaint.rc @ONLY)
+    target_sources(msepaint PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/msepaint.rc)
+    set_target_properties(msepaint PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()

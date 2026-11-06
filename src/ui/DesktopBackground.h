@@ -3,10 +3,10 @@
 #include <QString>
 
 // «Set as desktop background» en Linux: GNOME/Cinnamon con gsettings, KDE Plasma con
-// plasma-apply-wallpaperimage y XFCE con xfconf-query. Sin ninguno, el submenú se oculta.
+// plasma-apply-wallpaperimage y XFCE con xfconf-query; en Windows, SystemParametersInfo. Sin ninguno, el submenú se oculta.
 namespace desktop {
 
-enum class Kind { None, Gnome, Cinnamon, Kde, Xfce };
+enum class Kind { None, Gnome, Cinnamon, Kde, Xfce, Windows };
 
 Kind detect();
 // mode: fill | tile | center

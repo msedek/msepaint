@@ -4,6 +4,12 @@
 #include <QStandardPaths>
 #include <QUrl>
 
+#ifdef Q_OS_WIN
+#include <QDir>
+#include <QSettings>
+#include <windows.h>
+#endif
+
 namespace desktop {
 
 namespace {
@@ -26,6 +32,9 @@ bool has(const char *program) { return !QStandardPaths::findExecutable(QString::
 
 Kind detect()
 {
+#ifdef Q_OS_WIN
+    return Kind::Windows;
+#endif
     const QStringList names = qEnvironmentVariable("XDG_CURRENT_DESKTOP").toLower().split(QLatin1Char(':'), Qt::SkipEmptyParts);
     for (const QString &n : names) {
         if (n == QLatin1String("kde") && has("plasma-apply-wallpaperimage")) return Kind::Kde;
@@ -41,6 +50,22 @@ Kind detect()
 bool setWallpaper(Kind kind, const QString &path, const QString &mode, QString *error)
 {
     const QString uri = QUrl::fromLocalFile(path).toString();
+#ifdef Q_OS_WIN
+    if (kind == Kind::Windows) {
+        // Estilo: Llenar = 10, Mosaico = 0 + TileWallpaper 1, Centrar = 0.
+        QSettings reg(QStringLiteral("HKEY_CURRENT_USER\\Control Panel\\Desktop"), QSettings::NativeFormat);
+        reg.setValue(QStringLiteral("WallpaperStyle"), mode == QLatin1String("fill") ? QStringLiteral("10") : QStringLiteral("0"));
+        reg.setValue(QStringLiteral("TileWallpaper"), mode == QLatin1String("tile") ? QStringLiteral("1") : QStringLiteral("0"));
+        reg.sync();
+        const std::wstring w = QDir::toNativeSeparators(path).toStdWString();
+        if (!SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, const_cast<wchar_t *>(w.c_str()),
+                                   SPIF_UPDATEINIFILE | SPIF_SENDCHANGE)) {
+            if (error) *error = QStringLiteral("SystemParametersInfo failed");
+            return false;
+        }
+        return true;
+    }
+#endif
     switch (kind) {
     case Kind::Gnome:
     case Kind::Cinnamon: {
@@ -82,6 +107,7 @@ bool setWallpaper(Kind kind, const QString &path, const QString &mode, QString *
         }
         return any;
     }
+    case Kind::Windows:
     case Kind::None:
         break;
     }

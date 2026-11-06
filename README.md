@@ -1,6 +1,6 @@
 # msepaint
 
-A simple image editor for Linux. Open a picture or start a blank canvas, draw with pencils and brushes, add shapes and
+A simple image editor for Linux and Windows. Open a picture or start a blank canvas, draw with pencils and brushes, add shapes and
 text, select and move parts of the image, crop, resize, rotate, and work with layers. One window, no accounts, no
 cloud, no telemetry.
 
@@ -18,13 +18,25 @@ cloud, no telemetry.
 - **Image**: resize and skew, rotate (90°, 180° or any angle), flip, invert colors, canvas size by dragging its edges.
 - **Layers**: add, duplicate, reorder, hide, merge down, and a background color that can be changed or hidden.
 - **Files**: PNG, JPEG, BMP (1/4/8/24-bit), GIF, TIFF, ICO and WEBP; HEIC/AVIF when libheif is available. Layered
-  projects are saved as `.paint` files.
+  projects are saved as `.paint` files (on Linux, with libheif).
 - **View**: zoom from 10 % to 1000 %, rulers, gridlines, status bar, thumbnail, light and dark themes.
-- Undo and redo, printing with page setup, and "set as desktop background" on GNOME, KDE Plasma and XFCE.
+- Undo and redo, printing with page setup, and "set as desktop background" (Windows, GNOME, KDE Plasma and XFCE).
 
 ## Download and run
 
-Grab the AppImage from the [Releases](../../releases) page, then:
+Get the files from the [Releases](../../releases) page.
+
+### Windows
+
+- **Installer**: run `msepaint-<version>-windows-x64-setup.exe`. It installs for the current user (no administrator
+  rights needed), adds a Start menu shortcut, an optional desktop shortcut and an "Open with" entry for images, and can
+  be removed from *Settings → Apps*.
+- **Portable**: unzip `msepaint-<version>-windows-x64-portable.zip` anywhere and run `msepaint.exe`.
+
+Requires 64-bit Windows 10 or 11. The files are not code-signed, so SmartScreen may show a warning the first time:
+choose *More info → Run anyway*.
+
+### Linux
 
 ```bash
 chmod +x msepaint-*-x86_64.AppImage
@@ -32,7 +44,7 @@ chmod +x msepaint-*-x86_64.AppImage
 ```
 
 The AppImage targets 64-bit Linux with glibc 2.39 or newer (Ubuntu 24.04+, Debian 13+, Fedora 40+, current Arch and
-derivatives) and runs on both Wayland and X11. If it does not start, your system may need FUSE 2
+derivatives) and includes Wayland and X11 support. If it does not start, your system may need FUSE 2
 (`libfuse2` / `fuse2`); alternatively run it with `--appimage-extract-and-run`.
 
 ## Build from source
@@ -62,6 +74,18 @@ cmake --build build && cmake --install build
 ```
 
 To build the AppImage yourself: `scripts/build-appimage.sh`.
+
+### Windows build
+
+The Windows version is cross-compiled from Linux with [llvm-mingw](https://github.com/mstorsjo/llvm-mingw) (UCRT) and the
+official Qt for Windows built with llvm-mingw, plus a Linux Qt of the same version for the build tools and NSIS for
+the installer:
+
+```bash
+scripts/build-windows.sh <llvm-mingw-dir> <qt-windows-dir> <qt-linux-dir>
+```
+
+It produces the installer and the portable zip in `build/windows/`.
 
 ## Command line
 
