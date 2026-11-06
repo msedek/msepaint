@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=msepaint
+GenericName=Image Editor
+Comment=Simple image editor
+Exec=@CMAKE_INSTALL_FULL_BINDIR@/msepaint %f
+Icon=msepaint
+Terminal=false
+Categories=Graphics;2DGraphics;RasterGraphics;
+MimeType=image/png;image/jpeg;image/bmp;image/gif;image/tiff;image/webp;image/x-icon;image/heic;
+StartupWMClass=msepaint
