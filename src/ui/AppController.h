@@ -47,6 +47,8 @@ class AppController : public QObject {
     Q_PROPERTY(QString brush READ brush WRITE setBrush NOTIFY toolOptionsChanged)      // brush, calligraphyBrush, ...
     Q_PROPERTY(int toolSizeMin READ toolSizeMin NOTIFY toolSizeChanged)
     Q_PROPERTY(int toolSizeMax READ toolSizeMax NOTIFY toolSizeChanged)
+    // Escala del slider Size de la herramienta activa; cambia con la herramienta o el pincel (ambos emiten toolSizeChanged).
+    Q_PROPERTY(QVariantList toolSizeSteps READ toolSizeSteps NOTIFY toolSizeChanged)
     Q_PROPERTY(bool toolHasSize READ toolHasSize NOTIFY toolChanged)
     Q_PROPERTY(bool toolHasOpacity READ toolHasOpacity NOTIFY toolChanged)
     Q_PROPERTY(QString shape MEMBER m_shape NOTIFY toolOptionsChanged)                 // line, curve, oval, ...
@@ -126,7 +128,7 @@ public:
     bool toolHasSize() const;
     bool toolHasOpacity() const;
     Q_INVOKABLE void stepToolSize(int delta);
-    Q_INVOKABLE QVariantList toolSizeSteps() const;
+    QVariantList toolSizeSteps() const;
     int opacityPercent() const { return int(std::lround(m_ctx.opacity * 100)); }
     void setOpacityPercent(int v);
     int tolerance() const { return m_ctx.tolerance; }

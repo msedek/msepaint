@@ -72,7 +72,7 @@ Item {
             visible: root.showSize && !root.showTolerance
             Layout.preferredHeight: Math.min(360, root.sideBySide ? root.height : (root.height - 8) / 2)
             glyph: Icons.ruler
-            readonly property var steps: { root.app.tool; root.app.brush; return root.app.toolSizeSteps() }
+            readonly property var steps: root.app.toolSizeSteps
             from: 0; to: steps.length - 1
             value: { let i = 0; while (i < steps.length - 1 && steps[i] < root.app.toolSize) ++i; return i }
             valueText: root.app.toolSize + "px"

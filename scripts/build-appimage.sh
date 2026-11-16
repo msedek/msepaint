@@ -29,6 +29,14 @@ for d in /usr/lib/x86_64-linux-gnu/libheif/plugins /usr/lib/libheif/plugins; do
     done
     break
 done
+# Wayland EGL client plugin: linuxdeploy-plugin-qt does not deploy it, and without it the app aborts on Wayland.
+QT_PLUGINS="$("$QMAKE" -query QT_INSTALL_PLUGINS)"
+WL_EGL="$QT_PLUGINS/wayland-graphics-integration-client/libqt-plugin-wayland-egl.so"
+if [ -f "$WL_EGL" ]; then
+    mkdir -p "$BUILD/AppDir/usr/plugins/wayland-graphics-integration-client"
+    cp "$WL_EGL" "$BUILD/AppDir/usr/plugins/wayland-graphics-integration-client/"
+    EXTRA+=(--deploy-deps-only "$BUILD/AppDir/usr/plugins/wayland-graphics-integration-client/$(basename "$WL_EGL")")
+fi
 cd "$BUILD"
 export QML_SOURCES_PATHS="$ROOT/qml" EXTRA_PLATFORM_PLUGINS="libqwayland.so" EXTRA_QT_MODULES="waylandclient"
 export LDAI_OUTPUT="msepaint-$VERSION-x86_64.AppImage"
